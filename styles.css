@@ -1,0 +1,180 @@
+:root {
+  --bg-dark: #121212;
+  --bg-light: #f4f4f4;
+  --text-dark: #f0f0f0;
+  --text-light: #222;
+  --primary: #2a2a2a;
+  --border-color: #444;
+  --accent: #4caf50;
+  --font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+.app-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* MAIN AREA */
+.main-content {
+  flex: 1;
+  padding: 2rem;
+}
+
+form {
+  width: 90%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* SEARCH BAR */
+.search-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: var(--primary);
+  border-radius: 30px;
+  padding: 0.5rem 1rem;
+}
+
+.search-box input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
+.search-box button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0 0.5rem;
+}
+
+/* FILTER PILL GROUP */
+.search-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns */
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.option-container {
+  min-width: 0;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background-color: var(--primary);
+  border-radius: 20px;
+  font-size: 1rem;
+}
+
+.option input,
+.option select {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 1rem;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+}
+
+/* ADVANCED SEARCH */
+#advancedFields {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+  background-color: #1e1e1e;
+  padding: 0 1rem;
+  border-radius: 10px;
+}
+
+#advancedFields.open {
+  max-height: 1000px; /* large enough to fit content */
+  opacity: 1;
+  padding: 1rem;
+}
+
+#advancedFields label {
+  margin-top: 1rem;
+  display: block;
+  font-weight: bold;
+}
+
+#advancedFields input,
+#advancedFields select {
+  background-color: #2a2a2a;
+  color: #fff;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 5px;
+}
+
+/* QUERY PREVIEW */
+.result-container {
+  margin-top: 2rem;
+}
+
+#queryPreview {
+  padding: 1rem;
+  background-color: #1b1b1b;
+  border: 1px solid #333;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  font-family: monospace;
+}
+
+/* SUBMIT BUTTON */
+.submit-button {
+  margin-top: 1.5rem;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  background-color: var(--accent);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.submit-button:hover {
+  background-color: #66bb6a;
+}
+
+.tweet-card {
+  background-color: #1e1e1e;
+  padding: 1rem;
+  border-radius: 10px;
+  margin: 1rem 0;
+  border: 1px solid #333;
+}
+
+.tweet-card p {
+  margin: 0.5rem 0;
+}
+
+.tweet-card a {
+  color: #4fc3f7;
+  text-decoration: underline;
+}
