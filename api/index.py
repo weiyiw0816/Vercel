@@ -5,7 +5,9 @@ import os
 import pandas as pd
 from pathlib import Path
 
-app = Flask(__name__)
+app = Flask(__name__, 
+            template_folder=str(Path(__file__).parent.parent / 'templates'),
+            static_folder=str(Path(__file__).parent.parent / 'static'))
 
 API_KEY = 'bce309a4aceb4f70a8fa84490cb62d10'
 
