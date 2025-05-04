@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Twitter Search UI</title>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+</head>
+
+<body>
+    <div class="app-container">
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <form id="searchForm" method="POST">
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <div class="search-box">
+                        <button class="search-button" type="submit">
+                            <i class="fa-brands fa-searchengin fa-lg"></i>
+                        </button>
+                        <input type="text" name="keywords" placeholder="Search keywords">
+                        <button type="button" id="advancedToggle" title="Advanced Search" onclick="toggleAdvanced()">
+                            <i class="fa-solid fa-toolbox fa-lg"></i>
+                        </button>
+                    </div>
+
+                    <!-- Filter Pills -->
+                    <div class="search-options">
+                        <div class="option-container">
+                            <div class="option">
+                                👤 from_user:
+                                <input name="from_user" placeholder="e.g. elonmusk" />
+                            </div>
+                        </div>
+                        <div class="option-container">
+                            <div class="option">
+                              🔄 Query Type:
+                              <select name="queryType">
+                                <option value="Latest">Latest</option>
+                                <option value="Top">Top</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="option-container">
+                            <div class="option">
+                              📄 Max Pages:
+                              <input type="number" name="max_pages" value="1" min="1" max="50" />
+                            </div>
+                          </div>                          
+
+                        <div class="option-container">
+                            <div class="option">
+                                🈯 lang:
+                                <select name="lang">
+                                  <option value="">Any</option>
+                                  <option value="en" selected>English (English)</option>
+                                  <option value="zh">Chinese (中文)</option>
+                                  <option value="es">Spanish (Español)</option>
+                                  <option value="fr">French (Français)</option>
+                                  <option value="ja">Japanese (日本語)</option>
+                                </select>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Fields -->
+                <div id="advancedFields">
+                    <label>Since (YYYY-MM-DD):</label>
+                    <input type="date" name="since" />
+                    <label>Until (YYYY-MM-DD):</label>
+                    <input type="date" name="until" />                    
+                    <label>To User:</label><input name="to_user" />
+                    <label>Mentions (comma-separated):</label><input name="mentions" />
+                    <label>Min Retweets:</label><input name="min_retweets" />
+                    <label>Min Likes:</label><input name="min_faves" />
+                    <label>Min Replies:</label><input name="min_replies" />
+                </div>
+
+                <!-- Query Preview -->
+                <div class="result-container">
+                    <div id="queryPreview">
+                        <strong>Live Query:</strong>
+                        <span id="queryText"></span>
+                    </div>
+                </div>
+
+                {% if tweets %}
+                <div id="tweetResults" class="result-container">
+                  <h2>Sample Tweets</h2>
+                  {% for tweet in tweets %}
+                  <div class="tweet-card">
+                    <p>
+                      <strong>@{{ tweet.author.name }}</strong> — 
+                      <a href="{{ tweet.url }}" target="_blank">{{ tweet.createdAt }}</a>
+                    </p>
+                    <p>{{ tweet.text }}</p>
+                  </div>
+                  {% endfor %}
+                </div>
+                {% endif %}
+
+
+                {% if success %}
+                <h2>✅ Success! Download your files:</h2>
+                <a href="{{ url_for('download_file', filename=json_file) }}">Download JSON</a><br>
+                <a href="{{ url_for('download_file', filename=excel_file) }}">Download Excel</a>
+                {% endif %}
+            </form>
+        </main>
+    </div>
+
+    <script>
+        const queryText = document.getElementById("queryText");
+        const inputs = document.querySelectorAll("form input, form select");
+
+        function buildQuery() {
+            const form = new FormData(document.querySelector("form"));
+            let parts = [];
+
+            if (form.get("keywords")) parts.push(form.get("keywords"));
+            if (form.get("from_user")) parts.push(`from:${form.get("from_user")}`);
+            if (form.get("to_user")) parts.push(`to:${form.get("to_user")}`);
+            if (form.get("mentions")) {
+                form.get("mentions").split(',').forEach(m => {
+                    if (m.trim()) parts.push(`@${m.trim()}`);
+                });
+            }
+            if (form.get("since")) parts.push(`since:${form.get("since")}`);
+            if (form.get("until")) parts.push(`until:${form.get("until")}`);
+            if (form.get("min_retweets")) parts.push(`min_retweets:${form.get("min_retweets")}`);
+            if (form.get("min_faves")) parts.push(`min_faves:${form.get("min_faves")}`);
+            if (form.get("min_replies")) parts.push(`min_replies:${form.get("min_replies")}`);
+            if (form.get("lang")) parts.push(`lang:${form.get("lang")}`);
+
+            queryText.textContent = parts.join(" ");
+        }
+
+        inputs.forEach(input => input.addEventListener("input", buildQuery));
+        window.addEventListener("DOMContentLoaded", buildQuery);
+
+        function toggleAdvanced() {
+            const advanced = document.getElementById("advancedFields");
+            advanced.classList.toggle("open");
+        }
+
+        // Prevent submission unless keywords or from_user is filled
+        document.getElementById("searchForm").addEventListener("submit", function (e) {
+            const keywords = document.querySelector('input[name="keywords"]').value.trim();
+            const fromUser = document.querySelector('input[name="from_user"]').value.trim();
+
+            if (!keywords && !fromUser) {
+                e.preventDefault();
+                alert("Please fill at least one of: Keywords or From User.");
+            }
+        });
+    </script>
+</body>
+
+</html>
